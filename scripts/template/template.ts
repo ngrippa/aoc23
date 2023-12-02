@@ -1,20 +1,7 @@
-import * as path from "path";
-import * as fs from "fs";
+import { loadData } from "../../utils/loadData";
+import { Solve } from "../../utils/types";
 
-const loadData = (star: 1 | 2, input: "example" | "real") => {
-  return fs
-    .readFileSync(
-      path.join(
-        __dirname,
-        input === "example" ? `exampleInput${star}` : "input",
-      ),
-    )
-    .toString()
-    .split("\n")
-    .filter(Boolean);
-};
-
-export const solve = (star: 1 | 2, input: "example" | "real") => {
-  const data = loadData(star, input);
+export const solve: Solve = (star, input) => {
+  const data = loadData(star, input, __dirname);
   return 1;
 };

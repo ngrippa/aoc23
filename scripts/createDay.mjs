@@ -13,18 +13,15 @@ if (myArgs.length === 0) {
 const padLeft = (day) => (day < 10 ? "0" : "") + day;
 
 const folder = path.join("days/", padLeft(day));
+const unchanged = ["input", "exampleInput1", "exampleInput2"];
 const filenames = [
   `${padLeft(day)}.ts`,
   `${padLeft(day)}.test.ts`,
-  "input",
-  "exampleInput1",
+  ...unchanged,
 ].map((f) => path.join(folder, f));
-const sources = [
-  "template.ts",
-  "template.test.ts",
-  "input",
-  "exampleInput1",
-].map((f) => path.join(".", "scripts", "template", f));
+const sources = ["template.ts", "template.test.ts", ...unchanged].map((f) =>
+  path.join(".", "scripts", "template", f),
+);
 
 const replacer = /template/g;
 

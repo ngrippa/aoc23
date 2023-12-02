@@ -1,5 +1,4 @@
 import { solve } from "./template";
-import {describe} from "node:test";
 
 describe("Day template", () => {
   it("should be correct s1 example", () => {

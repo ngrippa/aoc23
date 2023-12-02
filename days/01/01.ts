@@ -1,18 +1,5 @@
-import * as path from "path";
-import * as fs from "fs";
-
-const loadData = (star: 1 | 2, input: "example" | "real") => {
-  return fs
-    .readFileSync(
-      path.join(
-        __dirname,
-        input === "example" ? `exampleInput${star}` : "input",
-      ),
-    )
-    .toString()
-    .split("\n")
-    .filter(Boolean);
-};
+import { loadData } from "../../utils/loadData";
+import { Solve } from "../../utils/types";
 
 const numbers = [
   "one",
@@ -40,8 +27,8 @@ export const matchFirstAndLast = (star: 1 | 2, input: string) => {
   return [toDigit(matches[0]), toDigit(matches[matches.length - 1])];
 };
 
-export const solve = (star: 1 | 2, input: "example" | "real") => {
-  const data = loadData(star, input);
+export const solve: Solve = (star, input) => {
+  const data = loadData(star, input, __dirname);
 
   return data.reduce((acc, curr) => {
     const numbers = matchFirstAndLast(star, curr);
