@@ -1,13 +1,11 @@
 import { loadData } from "../../utils/loadData";
 import { Solve } from "../../utils/types";
+import { splitNumbers } from "../../utils/processing";
 
 type NumberSet = { winning: number[]; mine: number[] };
 
 export const createNumberSet = (row: string): NumberSet => {
-  const numberSets = row
-    .split(": ")[1]
-    .split(" | ")
-    .map((ns) => ns.split(" ").filter(Boolean).map(Number));
+  const numberSets = row.split(": ")[1].split(" | ").map(splitNumbers);
   return { winning: numberSets[0], mine: numberSets[1] };
 };
 
@@ -32,15 +30,14 @@ export const solve: Solve = (star, input) => {
   } else {
     const winningNumbers = numbers.map(getNumberOfWinningNumbers);
     const instances: Record<number, number> = {};
-    winningNumbers.forEach((_, i) => instances[i + 1] = 1)
+    winningNumbers.forEach((_, i) => (instances[i + 1] = 1));
     winningNumbers.forEach((winning, index) => {
       const cardNumber = index + 1;
       const increment = instances[cardNumber];
       for (let i = cardNumber + 1; i <= cardNumber + winning; i++) {
-        if (instances[i]) instances[i] += increment
+        if (instances[i]) instances[i] += increment;
       }
     });
-    return Object.values(instances).reduce((acc, curr) => acc + curr, 0)
-
+    return Object.values(instances).reduce((acc, curr) => acc + curr, 0);
   }
 };
