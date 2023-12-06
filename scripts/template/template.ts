@@ -3,5 +3,9 @@ import { Solve } from "../../utils/types";
 
 export const solve: Solve = (star, input) => {
   const data = loadData(star, input, __dirname);
-  return 1;
+  if (star === 1) {
+    return 1;
+  } else {
+    return 1;
+  }
 };
