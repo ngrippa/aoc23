@@ -26,11 +26,11 @@ export const splitSeedRanges = (
   seedRanges: SeedRange[],
   map: ReturnType<typeof parseMap>,
 ) =>
-  seedRanges.flatMap((sr) => {
+  seedRanges.flatMap((originalSeedRange) => {
     let seedRangesForThisSr: SeedRange[] = [];
-    map.maps.forEach((location) => {
-      const commonStart = Math.max(location.fromN, sr.from);
-      const commonEnd = Math.min(location.fromNEnd, sr.to);
+    map.maps.forEach((row) => {
+      const commonStart = Math.max(row.fromN, originalSeedRange.from);
+      const commonEnd = Math.min(row.fromNEnd, originalSeedRange.to);
       if (commonEnd >= commonStart) {
         seedRangesForThisSr.push({
           from: commonStart,
@@ -40,7 +40,7 @@ export const splitSeedRanges = (
     });
     seedRangesForThisSr = sortBy(seedRangesForThisSr, "from");
     const newSeedRanges: SeedRange[] = [];
-    let nextN = sr.from;
+    let nextN = originalSeedRange.from;
     while (true) {
       const s = seedRangesForThisSr.shift();
       if (!s) break;
@@ -48,7 +48,7 @@ export const splitSeedRanges = (
       newSeedRanges.push(s);
       nextN = s.to + 1;
     }
-    if (nextN <= sr.to) newSeedRanges.push({ from: nextN, to: sr.to });
+    if (nextN <= originalSeedRange.to) newSeedRanges.push({ from: nextN, to: originalSeedRange.to });
     return newSeedRanges;
   });
 
