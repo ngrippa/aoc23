@@ -49,11 +49,7 @@ describe("Day 07", () => {
       expect(compareHands(2)("J2345", "JJJJJ")).toBeLessThan(0);
       expect(compareHands(2)("J2345", "2J345")).toBeLessThan(0);
     })
-
-
   })
-
-
 
   it("should be correct s2 real", () => {
     expect(solve(2, "real")).toBe(253362743);

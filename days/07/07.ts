@@ -1,5 +1,6 @@
 import { loadData } from "../../utils/loadData";
 import { Solve, Star } from "../../utils/types";
+import { memoize } from "lodash";
 
 const getCards = (star: Star) =>
   star === 1
@@ -18,9 +19,8 @@ export const Hands = {
 
 export type CardCount = [string, number];
 
-export const valueHand =
-  (star: Star) =>
-  (handString: string): number => {
+export const valueHand = memoize((star: Star) =>
+  memoize((handString: string): number => {
     const hand = handString.split("");
     const cards = getCards(star);
     const counts = cards.map(
@@ -52,7 +52,8 @@ export const valueHand =
     if (firstPair && differentMatch(firstPair, 2)) return Hands["twoPair"];
     if (firstPair) return Hands["onePair"];
     return Hands["highCard"];
-  };
+  }),
+);
 
 const compareCards = (star: Star) => (handA: string, handB: string) => {
   const cards = getCards(star);
