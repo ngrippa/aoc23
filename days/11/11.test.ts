@@ -1,5 +1,6 @@
-import {expandedBetween, solve} from "./11";
+import { solve } from "./11";
 import { manhattanDistance } from "../../utils/graph";
+import { elementsBetween } from "../../utils/math";
 
 describe("Day 11", () => {
   it("manhatten distance", () => {
@@ -9,10 +10,10 @@ describe("Day 11", () => {
   it("expand between", () => {
     const rows = [3, 7];
     const cols = [2, 5, 8];
-    // expect(expandedBetween(rows, 0, 0)).toBe(0);
-    // expect(expandedBetween(rows, 0, 1)).toBe(0);
-    expect(expandedBetween(cols, 3, 7)).toBe(1);
-  })
+    expect(elementsBetween(rows, 0, 0)).toBe(0);
+    expect(elementsBetween(rows, 0, 1)).toBe(0);
+    expect(elementsBetween(cols, 3, 7)).toBe(1);
+  });
 
   it("should be correct s1 example", () => {
     expect(solve(1, "example")).toBe(374);

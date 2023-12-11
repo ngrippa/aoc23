@@ -1,6 +1,7 @@
 import { loadData } from "../../utils/loadData";
 import { Solve } from "../../utils/types";
 import { manhattanDistance, Point } from "../../utils/graph";
+import { elementsBetween } from "../../utils/math";
 
 export const expandUniverse = (data: string[]): [number[], number[]] => {
   const colsToExpand = [];
@@ -14,18 +15,6 @@ export const expandUniverse = (data: string[]): [number[], number[]] => {
   return [rowsToExpand, colsToExpand];
 };
 
-export const expandedBetween = (
-  expanded: number[],
-  a: number,
-  b: number,
-): number => {
-  const start = Math.min(a, b);
-  const end = Math.max(a, b);
-  const firstSkip = expanded.findIndex((e) => e >= start);
-  if (firstSkip === -1) return 0;
-  const lastSkip = expanded.slice(firstSkip).findIndex((e) => e > end);
-  return lastSkip === -1 ? expanded.length - firstSkip : lastSkip;
-};
 export const solve: Solve = (star, input) => {
   const data = loadData(star, input, __dirname);
   const [expandedRows, expandedCols] = expandUniverse(data);
@@ -33,8 +22,8 @@ export const solve: Solve = (star, input) => {
   const modifiedManhattanDistance = (galaxyA: Point, galaxyB: Point) => {
     const manhatten = manhattanDistance(galaxyA, galaxyB);
     const expanded =
-      expandedBetween(expandedRows, galaxyA[0], galaxyB[0]) +
-      expandedBetween(expandedCols, galaxyA[1], galaxyB[1]);
+      elementsBetween(expandedRows, galaxyA[0], galaxyB[0]) +
+      elementsBetween(expandedCols, galaxyA[1], galaxyB[1]);
     const expansionResult = star === 1 ? 2 : 1000000;
     return manhatten + expanded * (expansionResult - 1);
   };
