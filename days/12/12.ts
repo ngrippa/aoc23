@@ -10,7 +10,7 @@ const parseRow = (str: string): Row => {
   const s = str.split(" ");
   return {
     springs: s[0],
-    information: splitNumbers(s[1], ","),
+    information: s[1].split(",").map(Number)
   } as Row;
 };
 
