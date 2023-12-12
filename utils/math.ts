@@ -19,3 +19,12 @@ export const elementsBetween = (
   const lastSkip = elements.slice(firstSkip).findIndex((e) => e > end);
   return lastSkip === -1 ? elements.length - firstSkip : lastSkip;
 };
+
+export const repeat = <T>(arr: T[], n: number, join: T[]): T[] => {
+  const res = [];
+  for (let i = 0; i < n; i++) {
+    res.push(arr);
+    if (i < n - 1) res.push(join);
+  }
+  return res.flat();
+};
