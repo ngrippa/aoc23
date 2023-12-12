@@ -53,7 +53,7 @@ const arrangementValid = memoize(
     }
     return returnValue;
   },
-  (springs, info, length) => `${length}_${info.join(",")}_${springs}`,
+  (springs, info, length) => `${length}_${springs}}_${info.join(",")}`,
 );
 
 export const countRowArrangements = (star: Star) => (str: string) => {
