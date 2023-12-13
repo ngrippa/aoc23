@@ -1,13 +1,9 @@
 import { loadDataGrouped } from "../../utils/loadData";
 import { Solve, Star } from "../../utils/types";
 import { flipField } from "../../utils/processing";
-import { cloneDeep } from "lodash";
-import {
-  replaceCharacter,
-  stringsHaveExactlyOneDiff,
-} from "../../utils/string";
+import { stringsHaveExactlyOneDiff } from "../../utils/string";
 
-type PotentialSymmetry = { i: number; field: string[]; usedSmudge: boolean };
+type PotentialSymmetry = { i: number; usedSmudge: boolean };
 
 const findPotentialSymmetriesInField =
   (star: Star) =>
@@ -16,18 +12,12 @@ const findPotentialSymmetriesInField =
       const next = field[i + 1];
       if (!next) return acc;
       if (curr === next) {
-        acc.push({ i, field, usedSmudge: false });
+        acc.push({ i, usedSmudge: false });
       } else {
         if (star === 2) {
           const cmp = stringsHaveExactlyOneDiff(curr, next);
           if (cmp !== null) {
-            const copiedField = cloneDeep(field);
-            copiedField[i] = replaceCharacter(
-              copiedField[i],
-              cmp,
-              copiedField[i + 1][cmp],
-            );
-            acc.push({ i, field: copiedField, usedSmudge: true });
+            acc.push({ i, usedSmudge: true });
           }
         }
       }
@@ -36,9 +26,9 @@ const findPotentialSymmetriesInField =
 
 const confirmSymmetriesInField =
   (star: Star) =>
-  (potentialSymmetries: PotentialSymmetry[]): number => {
+  (field: string[], potentialSymmetries: PotentialSymmetry[]): number => {
     const confirmedSymmetries = potentialSymmetries.filter(
-      ({ i, field, usedSmudge }) => {
+      ({ i, usedSmudge }) => {
         let smudge = usedSmudge;
         for (let a = i - 1; a >= 0; a--) {
           const b = 2 * i - a + 1;
@@ -65,7 +55,7 @@ const confirmSymmetriesInField =
 
 const findSymmetries = (star: Star) => (field: string[]) => {
   const potential = findPotentialSymmetriesInField(star)(field);
-  return confirmSymmetriesInField(star)(potential);
+  return confirmSymmetriesInField(star)(field, potential);
 };
 
 export const solve: Solve = (star, input) => {
