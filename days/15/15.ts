@@ -1,6 +1,7 @@
 import { loadData } from "../../utils/loadData";
 import { Solve } from "../../utils/types";
 import { sum } from "lodash";
+import { initDeepArray } from "../../utils/array";
 
 export const calcHash = (str: string) =>
   str.split("").reduce((acc, c) => {
@@ -42,7 +43,7 @@ export const solve: Solve = (star, input) => {
     const hashValues = sequences.map(calcHash);
     return sum(hashValues);
   } else {
-    const boxes = new Array(256).fill(1).map(() => [] as Sequence[]);
+    const boxes = initDeepArray<Sequence>(256);
     const parsed = sequences.map(parseSequence);
     parsed.forEach((seq) => {
       const box = boxes[seq.box];
