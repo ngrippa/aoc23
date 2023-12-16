@@ -10,10 +10,10 @@ describe("Day 16", () => {
   });
 
   it("should be correct s2 example", () => {
-    expect(solve(2, "example")).toBe(1);
+    expect(solve(2, "example")).toBe(51);
   });
 
   it("should be correct s2 real", () => {
-    expect(solve(2, "real")).toBe(1);
+    expect(solve(2, "real")).toBe(7665);
   });
 });

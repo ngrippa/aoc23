@@ -1,6 +1,6 @@
 import { loadData } from "../../utils/loadData";
 import { Solve } from "../../utils/types";
-import {Point, pointToString} from "../../utils/graph";
+import { Point, pointToString } from "../../utils/graph";
 
 type Beam = { position: Point; direction: Point };
 
@@ -34,8 +34,8 @@ const splitBeam = (c: string, beam: Beam): [Beam, Beam] | null => {
   return null;
 };
 
-export const simulateBeams = (field: string[]) => {
-  const beams: Beam[] = [{ position: [0, 0], direction: [1, 0] }];
+export const simulateBeams = (field: string[]) => (start: Beam) => {
+  const beams: Beam[] = [start];
   const energized: Record<string, string> = {};
   let beam;
   while ((beam = beams.pop())) {
@@ -57,16 +57,33 @@ export const simulateBeams = (field: string[]) => {
         beam.position[1] + beam.direction[1],
       ];
     }
-
   }
-  return Object.keys(energized).length
+  return Object.keys(energized).length;
 };
 
 export const solve: Solve = (star, input) => {
   const data = loadData(star, input, __dirname);
+  const sim = simulateBeams(data);
   if (star === 1) {
-    return simulateBeams(data);
+    return sim({ position: [0, 0], direction: [1, 0] });
   } else {
-    return 1;
+    const low = data.length - 1;
+    return data.reduce(
+      (acc, _, i) =>
+        Math.max(
+          acc,
+          sim({ position: [0, i], direction: [1, 0] }),
+          sim({ position: [i, 0], direction: [0, 1] }),
+          sim({
+            position: [low, i],
+            direction: [-1, 0],
+          }),
+          sim({
+            position: [i, low],
+            direction: [0, -1],
+          }),
+        ),
+      0,
+    );
   }
 };
