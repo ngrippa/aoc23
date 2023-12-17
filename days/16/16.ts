@@ -15,6 +15,13 @@ const changeBeamDirection = (c: string, beam: Beam) => {
   }
 };
 
+const moveBeam = (beam: Beam) => {
+  beam.position = [
+    beam.position[0] + beam.direction[0],
+    beam.position[1] + beam.direction[1],
+  ];
+};
+
 const splitBeam = (c: string, beam: Beam): [Beam, Beam] | null => {
   if (c === "-") {
     if (beam.direction[1]) {
@@ -36,7 +43,7 @@ const splitBeam = (c: string, beam: Beam): [Beam, Beam] | null => {
 
 export const simulateBeams = (field: string[]) => (start: Beam) => {
   const beams: Beam[] = [start];
-  const energized: Record<string, string> = {};
+  const energized: Record<string, string[]> = {};
   let beam;
   while ((beam = beams.pop())) {
     while (true) {
@@ -44,18 +51,20 @@ export const simulateBeams = (field: string[]) => (start: Beam) => {
       if (!c) break;
       const pos = pointToString(beam.position);
       const dir = pointToString(beam.direction);
-      if (energized[pos] === dir) break;
-      energized[pos] = dir;
+      const hit = energized[pos];
+      if (hit) {
+        if (hit.includes(dir)) break;
+        hit.push(dir)
+      } else {
+        energized[pos] = [dir];
+      }
       const newBeams = splitBeam(c, beam);
       if (newBeams) {
         beams.push(...newBeams);
         break;
       }
       changeBeamDirection(c, beam);
-      beam.position = [
-        beam.position[0] + beam.direction[0],
-        beam.position[1] + beam.direction[1],
-      ];
+      moveBeam(beam);
     }
   }
   return Object.keys(energized).length;
