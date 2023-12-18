@@ -1,10 +1,12 @@
 import { loadData } from "../../utils/loadData";
 import { Solve } from "../../utils/types";
-import { Point, pointToString, stringToPoint } from "../../utils/graph";
+import {
+  getDirString,
+  Point,
+  pointToString,
+  stringToPoint,
+} from "../../utils/graph";
 import { initDeepArray } from "../../utils/array";
-
-const getDirString = (a: Point, b: Point) =>
-  pointToString([a[0] - b[0], a[1] - b[1]]);
 
 const getNeighbors = ([cx, cy]: Point): Point[] => [
   [cx, cy + 1],
@@ -13,50 +15,30 @@ const getNeighbors = ([cx, cy]: Point): Point[] => [
   [cx - 1, cy],
 ];
 
+const buildString = (point: Point, prev: Point, n: number) =>
+  [pointToString(point), pointToString(prev), n].join(",");
+
 export const solve: Solve = (star, input) => {
   const data = loadData(star, input, __dirname).map((str) =>
     str.split("").filter(Boolean).map(Number),
   );
-
-  const buildString = (point: Point, prev: Point, n: number) =>
-    [pointToString(point), pointToString(prev), n].join(",");
-
-  const unvisited = new Set<string>();
+  const maxDist = data.length * 20;
+  const visitedByDistance = initDeepArray<string>(maxDist);
   const dist: Record<string, number> = {};
-  const prev: Record<string, string> = {};
-  data.forEach((r, x) =>
-    r.forEach((n, y) => {
-      if (!x && !y) {
-        const str = buildString([x, y], [x, y - 1], 0);
-        unvisited.add(str);
-        dist[str] = 0;
-      } else {
-        const neighbors = getNeighbors([x, y]);
-        neighbors.forEach((n) => {
-          for (let i = 1; i <= (star === 1 ? 3 : 10); i++) {
-            const str = buildString([x, y], n, i);
-            unvisited.add(str);
-          }
-        });
-      }
-    }),
-  );
+  const start = `0/0,0/-1,0`;
+  dist[start] = 0;
+
   const end = pointToString([data.length - 1, data[0].length - 1]);
 
-  const maxDist = data.length * 20;
-
-  const start = `0/0,0/-1,0`;
   let current = start;
-  const dists = initDeepArray<string>(maxDist);
   let minDist = 0;
 
   const getNextNode = () => {
     for (let i = minDist; i < maxDist; i++) {
-      if (dists[i].length) {
-        return dists[i].pop();
+      if (visitedByDistance[i].length) {
+        return visitedByDistance[i].pop();
       }
     }
-    return [...unvisited][0];
   };
 
   while (true) {
@@ -66,6 +48,7 @@ export const solve: Solve = (star, input) => {
     }
     const cp = stringToPoint(split[0]);
     for (const neighbor of getNeighbors(cp)) {
+      if (pointToString(neighbor) === split[1]) continue;
       const [nx, ny] = neighbor;
       const c = data[nx]?.[ny];
       if (!c) continue;
@@ -83,23 +66,21 @@ export const solve: Solve = (star, input) => {
       if (newN > (star === 1 ? 3 : 10)) {
         continue;
       }
-
-      if (pointToString(neighbor) === split[1]) continue;
       const ns = buildString(neighbor, cp, newN);
       const d = dist[current] + c;
       const oldDist = dist[ns] ?? Infinity;
       if (d < oldDist) {
-        dists[d].push(ns);
-        if (dists[oldDist]) dists[oldDist] = dists[d].filter((s) => s !== ns);
+        visitedByDistance[d].push(ns);
+        if (visitedByDistance[oldDist])
+          visitedByDistance[oldDist] = visitedByDistance[d].filter(
+            (s) => s !== ns,
+          );
         dist[ns] = d;
-        prev[ns] = current;
       }
     }
-    unvisited.delete(current);
     const nextNode = getNextNode();
     if (!nextNode) return 0;
     current = nextNode;
-    const d = dist[current];
-    minDist = d;
+    minDist = dist[current];
   }
 };
